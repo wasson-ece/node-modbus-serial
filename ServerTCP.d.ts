@@ -58,7 +58,13 @@ export declare interface ServerTCP {
     on(event: 'serverError', listener: FCallback): this;
     on(event: 'error', listener: FCallback): this;
     on(event: 'initialized', listener: FCallback): this;
+    on(event: 'debug.request', listener: FCallbackVal<DebugPayload>): this;
+    on(event: 'debug.response', listener: FCallbackVal<DebugPayload>): this;
 }
 
 export type FCallbackVal<T> = (err: Error | null, value: T) => void;
 export type FCallback = (err: Error | null) => void;
+export type DebugPayload = {
+    action: "request" | "response",
+    data: Buffer<ArrayBuffer>
+}

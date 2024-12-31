@@ -252,6 +252,7 @@ class ServerTCP extends EventEmitter {
             });
 
             sock.on("data", function(data) {
+                modbus.emit('debug.socketData', data)
                 modbusSerialDebug({ action: "socket data", data: data });
                 recvBuffer = Buffer.concat([recvBuffer, data], recvBuffer.length + data.length);
 
@@ -273,6 +274,7 @@ class ServerTCP extends EventEmitter {
                     const crc = crc16(requestBuffer.slice(0, -2));
                     requestBuffer.writeUInt16LE(crc, requestBuffer.length - 2);
 
+                    modbus.emit('debug.request', null, { action: "request", data: requestBuffer });
                     modbusSerialDebug({ action: "receive", data: requestBuffer, requestBufferLength: requestBuffer.length });
                     modbusSerialDebug(JSON.stringify({ action: "receive", data: requestBuffer }));
 
@@ -291,6 +293,7 @@ class ServerTCP extends EventEmitter {
                             outTcp.writeUInt16BE(responseBuffer.length - 2, 4);
                             responseBuffer.copy(outTcp, 6);
 
+                            modbus.emit('debug.response', null, { action: "response", data: responseBuffer });
                             modbusSerialDebug({ action: "send", data: responseBuffer });
                             modbusSerialDebug(JSON.stringify({ action: "send string", data: responseBuffer }));
 
